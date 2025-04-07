@@ -1,0 +1,205 @@
+/* Landing Page Styles */
+.landing-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+    color: #333;
+  }
+  
+  .landing-header {
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    padding: 1rem 2rem;
+  }
+  
+  .landing-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .landing-logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1a8917;
+  }
+  
+  .landing-nav-links {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+  }
+  
+  .landing-nav-link {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  
+  .landing-nav-link:hover {
+    color: #1a8917;
+  }
+  
+  .landing-nav-btn {
+    background-color: #1a8917;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+  }
+  
+  .landing-nav-btn:hover {
+    background-color: #156912;
+  }
+  
+  .landing-main {
+    flex: 1;
+    padding: 2rem;
+  }
+  
+  .landing-hero {
+    max-width: 800px;
+    margin: 4rem auto;
+    text-align: center;
+    padding: 0 1rem;
+  }
+  
+  .landing-title {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+    color: #222;
+  }
+  
+  .landing-subtitle {
+    font-size: 1.25rem;
+    color: #666;
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .landing-cta {
+    display: inline-block;
+    background-color: #1a8917;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.1rem;
+    transition: background-color 0.2s;
+  }
+  
+  .landing-cta:hover {
+    background-color: #156912;
+  }
+  
+  .landing-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 4rem auto;
+    padding: 0 1rem;
+  }
+  
+  .feature-card {
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .feature-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: #222;
+  }
+  
+  .feature-card p {
+    color: #666;
+  }
+  
+  .landing-footer {
+    text-align: center;
+    padding: 2rem;
+    background-color: #f8f9fa;
+    color: #666;
+    font-size: 0.9rem;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .landing-title {
+      font-size: 2rem;
+    }
+    
+    .landing-subtitle {
+      font-size: 1.1rem;
+    }
+    
+    .landing-features {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Additional Auth Styles */
+.terms {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .terms label {
+    font-weight: normal;
+  }
+  
+  .terms a {
+    color: #1a8917;
+    text-decoration: none;
+  }
+  
+  .terms a:hover {
+    text-decoration: underline;
+  }
+  
+  .auth-message {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .password-strength {
+    margin-top: 0.25rem;
+    font-size: 0.8rem;
+    color: #666;
+  }
+  
+  .password-strength.weak {
+    color: #d32f2f;
+  }
+  
+  .password-strength.medium {
+    color: #ffa000;
+  }
+  
+  .password-strength.strong {
+    color: #388e3c;
+  }
