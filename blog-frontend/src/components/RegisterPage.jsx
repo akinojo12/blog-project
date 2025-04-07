@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext'
 import '../assets/login.css'
@@ -35,7 +35,7 @@ const RegisterPage = () => {
   };
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/auth/register`,{
+    fetch(`${import.meta.env.VITE_API_URL}/api/auth/`,{
       method: 'POST',
       headers: { 'content-type': 'application/json'},
       body: JSON.stringify({name, email, password})
