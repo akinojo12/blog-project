@@ -35,8 +35,14 @@ const RegisterPage = () => {
   };
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/auth`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/auth/register`,{
+      method: 'POST',
+      headers: { 'content-type': 'application/json'},
+      body: JSON.stringify({name, email, password})
+    })
     .then(res => res.json())
+    .then(data => console.log(data))
+    .catch(err => console.error(err))
   })
 
   return (
