@@ -1,0 +1,10 @@
+{
+    "rewrites": [
+      {
+        "source": "/(.*)",
+        "destination": "https://blog-backend-r5fu.onrender.com/(.*)"
+      }
+    ]
+  }
+
+  
