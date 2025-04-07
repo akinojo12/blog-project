@@ -14,6 +14,7 @@ const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,6 +33,11 @@ const RegisterPage = () => {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/api/auth`)
+    .then(res => res.json())
+  })
 
   return (
     <div className="auth-container">
