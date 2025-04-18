@@ -1,38 +1,43 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'
-import '../assets/login.css'
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+import '../assets/login.css';
 
-const ForgotPasswordPage = () => {
+const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { forgotPassword } = useAuth();
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       setError('');
+      setMessage('');
       setLoading(true);
-      await forgotPassword(email);
-      setMessage('Check your email for further instructions');
+
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/forgotpassword`, {
+        email,
+      });
+
+      setMessage(response.data.message);
     } catch (err) {
-      setError(err.message || 'Failed to reset password');
+      setError(err.response?.data?.message || 'Failed to send reset email');
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
     <div className="auth-container">
       <div className="auth-card">
         <div className="auth-header">
-          <h2>Reset your password</h2>
-          <p>We'll send you a link to reset your password</p>
+          <h2>Forgot Password</h2>
+          <p>Enter your email to reset your password</p>
         </div>
-        
+
         {error && <div className="auth-error">{error}</div>}
         {message && <div className="auth-message">{message}</div>}
 
@@ -46,6 +51,7 @@ const ForgotPasswordPage = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="your@email.com"
+              autoComplete="email"
             />
           </div>
 
@@ -54,7 +60,7 @@ const ForgotPasswordPage = () => {
             className="auth-button"
             disabled={loading}
           >
-            {loading ? 'Sending...' : 'Send reset link'}
+            {loading ? 'Sending...' : 'Send Reset Link'}
           </button>
         </form>
 
@@ -66,4 +72,4 @@ const ForgotPasswordPage = () => {
   );
 };
 
-export default ForgotPasswordPage;
+export default ForgotPassword;

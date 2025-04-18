@@ -1,97 +1,532 @@
-/* Home Page Styles */
-.home-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem 1rem;
+/* Home Page */
+.home-page {
+    background-color: #fff;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    position: relative;
   }
   
+  /* Header */
   .home-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    padding: 10px 20px;
+    border-bottom: 1px solid #e0e0e0;
   }
   
-  .home-header h1 {
-    font-size: 2rem;
-    color: #222;
-  }
-  
-  .compose-button {
-    background-color: #1a8917;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 4px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: background-color 0.2s;
-  }
-  
-  .compose-button:hover {
-    background-color: #156912;
-  }
-  
-  .search-container {
-    margin-bottom: 2rem;
-  }
-  
-  .search-input {
-    width: 100%;
+  .home-search {
+    flex: 1;
     max-width: 500px;
-    padding: 0.75rem 1rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
-    transition: border-color 0.2s;
+    margin: 0 auto;
   }
   
-  .search-input:focus {
-    outline: none;
-    border-color: #1a8917;
-    box-shadow: 0 0 0 2px rgba(26, 137, 23, 0.1);
-  }
-  
-  .posts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
-  }
-  
-  .loading, .error, .no-posts {
-    text-align: center;
-    padding: 2rem;
-    font-size: 1.1rem;
+  .home-search input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    background-color: #f5f5f5;
     color: #666;
   }
   
-  .error {
-    color: #d32f2f;
+  .home-user {
+    display: flex;
+    align-items: center;
   }
   
-  .no-posts h3 {
-    margin-bottom: 1rem;
-    color: #444;
+  .home-user-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    color: #333;
+    cursor: pointer;
   }
   
-  .create-post-link {
-    color: #1a8917;
-    text-decoration: none;
+  .home-user-avatar {
+    font-size: 1.2rem;
+  }
+  
+  /* Navigation */
+  .home-nav {
+    padding: 10px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  .home-nav-tabs {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .home-nav-tab {
+    background-color: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+  }
+  
+  .home-nav-tab.active {
+    background-color: #000;
+    color: #fff;
+    border-color: #000;
+  }
+  
+  .home-nav-tab:hover {
+    background-color: #e0e0e0;
+  }
+  
+  /* Main Content */
+  .home-main {
+    padding: 20px;
+  }
+  
+  /* Compose Section */
+  .home-compose-section {
+    margin-bottom: 20px;
+  }
+  
+  .home-compose-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .home-compose-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+  }
+  
+  .home-compose-section h2 {
+    font-size: 1.2rem;
     font-weight: 500;
+    color: #333;
   }
   
-  .create-post-link:hover {
-    text-decoration: underline;
+  .home-compose-link {
+    text-decoration: none;
   }
   
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
+  .home-compose-box {
+    background-color: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 0.9rem;
+    color: #666;
+    cursor: text;
+  }
+  
+  /* Post Grid */
+  .home-post-grid {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  
+  /* Pagination */
+  .home-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .home-pagination-btn {
+    background-color: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    color: #333;
+    cursor: pointer;
+  }
+  
+  .home-pagination-btn:disabled {
+    background-color: #e0e0e0;
+    cursor: not-allowed;
+  }
+  
+  .home-pagination span {
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  /* Loading and Error States */
+  .home-loading,
+  .home-error,
+  .home-no-posts {
+    text-align: center;
+    font-size: 1rem;
+    color: #666;
+    margin: 20px 0;
+  }
+  
+  /* Get App Button */
+  .home-get-app-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    color: #333;
+    cursor: pointer;
+  }
+  
+  /* Responsive Design */
+  
+  /* Tablet (768px - 1023px) */
+  @media (max-width: 1023px) {
     .home-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1rem;
+      padding: 8px 15px;
     }
   
-    .posts-grid {
-      grid-template-columns: 1fr;
+    .home-search input {
+      padding: 6px 10px;
+      font-size: 0.8rem;
+    }
+  
+    .home-user-btn {
+      padding: 4px 8px;
+      font-size: 0.8rem;
+    }
+  
+    .home-user-avatar {
+      font-size: 1rem;
+    }
+  
+    .home-nav {
+      padding: 8px 15px;
+    }
+  
+    .home-nav-tabs {
+      gap: 6px;
+    }
+  
+    .home-nav-tab {
+      padding: 5px 10px;
+      font-size: 0.8rem;
+    }
+  
+    .home-main {
+      padding: 15px;
+    }
+  
+    .home-compose-header {
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+  
+    .home-compose-avatar {
+      width: 28px;
+      height: 28px;
+      font-size: 1rem;
+    }
+  
+    .home-compose-section h2 {
+      font-size: 1.1rem;
+    }
+  
+    .home-compose-box {
+      padding: 8px;
+      font-size: 0.8rem;
+    }
+  
+    .home-post-grid {
+      max-width: 600px;
+    }
+  
+    .home-pagination {
+      gap: 8px;
+      margin-top: 15px;
+    }
+  
+    .home-pagination-btn {
+      padding: 5px 10px;
+      font-size: 0.8rem;
+    }
+  
+    .home-pagination span {
+      font-size: 0.8rem;
+    }
+  
+    .home-get-app-btn {
+      bottom: 15px;
+      right: 15px;
+      padding: 6px 12px;
+      font-size: 0.8rem;
     }
   }
+  
+  /* Mobile (≤767px) */
+  @media (max-width: 767px) {
+    .home-header {
+      padding: 6px 10px;
+    }
+  
+    .home-search input {
+      padding: 5px 8px;
+      font-size: 0.75rem;
+    }
+  
+    .home-user-btn {
+      padding: 3px 6px;
+      font-size: 0.75rem;
+    }
+  
+    .home-user-avatar {
+      font-size: 0.9rem;
+    }
+  
+    .home-nav {
+      padding: 6px 10px;
+    }
+  
+    .home-nav-tabs {
+      gap: 5px;
+    }
+  
+    .home-nav-tab {
+      padding: 4px 8px;
+      font-size: 0.75rem;
+    }
+  
+    .home-main {
+      padding: 10px;
+    }
+  
+    .home-compose-header {
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+  
+    .home-compose-avatar {
+      width: 24px;
+      height: 24px;
+      font-size: 0.9rem;
+    }
+  
+    .home-compose-section h2 {
+      font-size: 1rem;
+    }
+  
+    .home-compose-box {
+      padding: 6px;
+      font-size: 0.75rem;
+    }
+  
+    .home-post-grid {
+      max-width: 100%;
+    }
+  
+    .home-pagination {
+      gap: 6px;
+      margin-top: 10px;
+    }
+  
+    .home-pagination-btn {
+      padding: 4px 8px;
+      font-size: 0.75rem;
+    }
+  
+    .home-pagination span {
+      font-size: 0.75rem;
+    }
+  
+    .home-get-app-btn {
+      bottom: 10px;
+      right: 10px;
+      padding: 5px 10px;
+      font-size: 0.75rem;
+    }
+  }
+  
+  /* Very Small Screens (≤480px) */
+  @media (max-width: 480px) {
+    .home-header {
+      padding: 5px 8px;
+    }
+  
+    .home-search input {
+      padding: 4px 6px;
+      font-size: 0.7rem;
+    }
+  
+    .home-user-btn {
+      padding: 2px 5px;
+      font-size: 0.7rem;
+    }
+  
+    .home-user-avatar {
+      font-size: 0.8rem;
+    }
+  
+    .home-nav {
+      padding: 5px 8px;
+    }
+  
+    .home-nav-tabs {
+      gap: 4px;
+    }
+  
+    .home-nav-tab {
+      padding: 3px 6px;
+      font-size: 0.7rem;
+    }
+  
+    .home-main {
+      padding: 8px;
+    }
+  
+    .home-compose-header {
+      gap: 5px;
+      margin-bottom: 5px;
+    }
+  
+    .home-compose-avatar {
+      width: 20px;
+      height: 20px;
+      font-size: 0.8rem;
+    }
+  
+    .home-compose-section h2 {
+      font-size: 0.9rem;
+    }
+  
+    .home-compose-box {
+      padding: 5px;
+      font-size: 0.7rem;
+    }
+  
+    .home-post-grid {
+      max-width: 100%;
+    }
+  
+    .home-pagination {
+      gap: 5px;
+      margin-top: 8px;
+    }
+  
+    .home-pagination-btn {
+      padding: 3px 6px;
+      font-size: 0.7rem;
+    }
+  
+    .home-pagination span {
+      font-size: 0.7rem;
+    }
+  
+    .home-get-app-btn {
+      bottom: 8px;
+      right: 8px;
+      padding: 4px 8px;
+      font-size: 0.7rem;
+    }
+  }
+
+ /* User Dropdown */
+.home-user-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 20px;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+  }
+  
+  .home-user-dropdown-item {
+    display: block; /* Ensure Link behaves like a block element */
+    background-color: transparent;
+    border: none;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    color: #333;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    text-decoration: none; /* Remove underline from Link */
+  }
+  
+  .home-user-dropdown-item:hover {
+    background-color: #f5f5f5;
+  }
+  
+  /* Responsive Adjustments for Dropdown */
+  @media (max-width: 1023px) {
+    .home-user-dropdown {
+      top: 45px;
+      right: 15px;
+    }
+  
+    .home-user-dropdown-item {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+    }
+  }
+  
+  @media (max-width: 767px) {
+    .home-user-dropdown {
+      top: 40px;
+      right: 10px;
+    }
+  
+    .home-user-dropdown-item {
+      padding: 5px 10px;
+      font-size: 0.75rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .home-user-dropdown {
+      top: 35px;
+      right: 8px;
+    }
+  
+    .home-user-dropdown-item {
+      padding: 4px 8px;
+      font-size: 0.7rem;
+    }
+  }
+
+  .home-user-pic,
+.home-compose-pic {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.namee{
+    color: green;
+}
+
+.home-user-pic,
+.home-compose-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}

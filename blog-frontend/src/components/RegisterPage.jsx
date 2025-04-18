@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'
-import '../assets/login.css'
-
-
+import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
+import '../assets/login.css';
 
 const RegisterPage = () => {
   const [name, setName] = useState('');
@@ -14,11 +13,10 @@ const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (password !== confirmPassword) {
       return setError("Passwords don't match");
     }
@@ -26,24 +24,23 @@ const RegisterPage = () => {
     try {
       setError('');
       setLoading(true);
-      await register(name, email, password);
-      navigate('/');
-    } catch (err) {
-      setError(err.message || 'Failed to create account');
-    }
-    setLoading(false);
-  };
 
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/auth/register`,{
-      method: 'POST',
-      headers: { 'content-type': 'application/json'},
-      body: JSON.stringify({name, email, password})
-    })
-    .then(res => res.json())
-    .then(data => console.log(data))
-    .catch(err => console.error(err))
-  })
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, {
+        name,
+        email,
+        password,
+      });
+
+      const data = response.data;
+      register(data);
+      navigate('/login');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to create account');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="auth-container">
@@ -65,6 +62,7 @@ const RegisterPage = () => {
               onChange={(e) => setName(e.target.value)}
               required
               placeholder="Your name"
+              autoComplete="name"
             />
           </div>
 
@@ -77,6 +75,7 @@ const RegisterPage = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="your@email.com"
+              autoComplete="email"
             />
           </div>
 
@@ -89,7 +88,8 @@ const RegisterPage = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="••••••••"
-              minLength="6"
+              minLength="8"
+              autoComplete="new-password"
             />
           </div>
 
@@ -102,6 +102,8 @@ const RegisterPage = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
               placeholder="••••••••"
+              minLength="8"
+              autoComplete="new-password"
             />
           </div>
 

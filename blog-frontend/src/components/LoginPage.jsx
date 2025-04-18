@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'
-import '../assets/login.css'
-import '../common/Header'
-
+import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
+import '../assets/login.css';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -15,17 +14,25 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       setError('');
       setLoading(true);
-      await login(email, password);
-      navigate('/');
+
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
+        email,
+        password,
+      });
+
+      const data = response.data;
+      login(data);
+      navigate('/home');
     } catch (err) {
-      setError('Failed to log in. Please check your credentials.');
+      setError(err.response?.data?.message || 'Failed to log in. Please check your credentials.');
       console.error(err);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -48,6 +55,7 @@ const LoginPage = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="your@email.com"
+              autoComplete="email"
             />
           </div>
 
@@ -60,6 +68,7 @@ const LoginPage = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="••••••••"
+              autoComplete="current-password"
             />
           </div>
 

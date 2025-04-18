@@ -7,7 +7,7 @@ const LandingPage = () => {
     <div className="landing-container">
       <header className="landing-header">
         <nav className="landing-nav">
-          <div className="landing-logo">SubStack</div>
+          <div className="landing-logo">My Blog</div>
           <div className="landing-nav-links">
             <Link to="/login" className="landing-nav-link">Sign In</Link>
             <Link to="/register" className="landing-nav-btn">Get started</Link>
