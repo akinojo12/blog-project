@@ -1,62 +1,49 @@
-import { Routes, Route, Navigate, useParams, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import LoginPage from './components/LoginPage';
 import LandingPage from './pages/LandingPage';
 import RegisterPage from './components/RegisterPage';
 import ForgotPassword from './components/ForgotPassword';
 import HomePage from './pages/HomePage';
-import BlogCard from './components/BlogCard';
+import BlogCard from './components/BlogCard'; // Assuming this is used within other pages
 import ComposePage from './components/ComposePage';
 import ProfilePage from './pages/ProfilePage';
 import PostPage from './pages/PostPage';
-import EditPostPage from './pages/EditPostPage'; 
+import EditPostPage from './pages/EditPostPage';
 import EditProfilePage from './pages/EditProfilePage';
 
-
+// Simplified ProtectedRoute component
 const ProtectedRoute = ({ children }) => {
-  const { user, getToken } = useAuth();
-  const token = getToken();
-  const navigate = useNavigate();
-  const { id } = useParams();
+  const { user, authLoading } = useAuth();
 
-  console.log('ProtectedRoute - User:', user);
-  console.log('ProtectedRoute - Token:', token);
-
-  if (!user || !token) {
-    console.log('ProtectedRoute - Redirecting to /login');
-    return <Navigate to="/login" replace />;
+  if (authLoading) {
+    return <div className="loading">Loading authentication...</div>; 
   }
 
-  if (id && !/^[0-9a-fA-F]{24}$/.test(id)) {
-    console.log('ProtectedRoute - Invalid ID, redirecting to /profile');
-    return <Navigate to="/profile" replace />;
+  if (!user) {
+    return <Navigate to="/login" replace />;
   }
 
   return children;
 };
 
+// Main App component with organized routes
 const App = () => {
   return (
     <Routes>
+      {/* Public Routes */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
-      
-      
+
+      {/* Protected Routes */}
       <Route
         path="/home"
         element={
           <ProtectedRoute>
             <HomePage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/blog"
-        element={
-          <ProtectedRoute>
-            <BlogCard />
           </ProtectedRoute>
         }
       />
@@ -68,9 +55,13 @@ const App = () => {
           </ProtectedRoute>
         }
       />
-      <Route path='/edit-profile/:id??' element={<ProtectedRoute>
-        <EditProfilePage />
-      </ProtectedRoute>}
+      <Route
+        path="/edit-profile"
+        element={
+          <ProtectedRoute>
+            <EditProfilePage />
+          </ProtectedRoute>
+        }
       />
       <Route
         path="/profile/:id?"
@@ -96,9 +87,8 @@ const App = () => {
           </ProtectedRoute>
         }
       />
-      <Route path="*" element={<div>404 - Page Not Found</div>} />
-    </Routes>
 
+    </Routes>
   );
 };
 

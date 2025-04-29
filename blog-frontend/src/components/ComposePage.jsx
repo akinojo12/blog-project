@@ -141,16 +141,7 @@ const ComposePage = () => {
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="excerpt">Excerpt (optional)</label>
-          <textarea
-            id="excerpt"
-            value={excerpt}
-            onChange={(e) => setExcerpt(e.target.value)}
-            placeholder="Short summary of your post"
-            rows="3"
-          />
-        </div>
+        
 
         <div className="form-group">
           <label htmlFor="content">Content</label>

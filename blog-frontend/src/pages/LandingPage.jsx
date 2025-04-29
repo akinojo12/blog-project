@@ -7,7 +7,7 @@ const LandingPage = () => {
     <div className="landing-container">
       <header className="landing-header">
         <nav className="landing-nav">
-          <div className="landing-logo">My Blog</div>
+          <div className="landing-logo">MyBlog</div>
           <div className="landing-nav-links">
             <Link to="/login" className="landing-nav-link">Sign In</Link>
             <Link to="/register" className="landing-nav-btn">Get started</Link>
@@ -39,7 +39,7 @@ const LandingPage = () => {
       </main>
 
       <footer className="landing-footer">
-        <p>© {new Date().getFullYear()} SubStack Clone. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} Myblog. All rights reserved.</p>
       </footer>
     </div>
   );

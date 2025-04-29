@@ -133,6 +133,8 @@
     font-size: 0.9rem;
     color: #666;
     cursor: text;
+    height: 40px;
+    width: auto;
   }
   
   /* Post Grid */

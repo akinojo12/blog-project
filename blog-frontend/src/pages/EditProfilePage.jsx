@@ -1,34 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import '../assets/compose.css';
+import '../assets/profile.css';
+
+const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
 
 const EditProfilePage = () => {
-  const { getToken, user, logout, setUser } = useAuth();
+  const { getToken, user, logout, updateUser: updateAuthUser, authLoading, authError } = useAuth();
   const navigate = useNavigate();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [bio, setBio] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    bio: '',
+    password: '',
+    confirmPassword: '',
+  });
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [previewImage, setPreviewImage] = useState('');
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchProfile = async () => {
       const token = getToken();
-      if (!token || !user) {
-        setError('User not authenticated');
+      console.log('EditProfilePage: Token on fetch:', token ? token.substring(0, 10) + '...' : 'No token');
+      console.log('EditProfilePage: User on fetch:', user);
+
+      if (!token || !user || !user._id) {
+        console.error('EditProfilePage: User or token missing');
+        setError('Please log in to edit your profile');
         setFetchLoading(false);
         navigate('/login');
         return;
       }
 
-      const userId = user._id;
-      if (!userId || !/^[0-9a-fA-F]{24}$/.test(userId)) {
-        console.error('Invalid or missing user._id:', user);
+      if (!isValidObjectId(user._id)) {
+        console.error('EditProfilePage: Invalid user._id:', user._id);
         setError('Invalid user profile. Please log in again.');
         setFetchLoading(false);
         logout();
@@ -45,39 +54,92 @@ const EditProfilePage = () => {
           }
         );
         const userData = response.data;
-        setName(userData.name || '');
-        setEmail(userData.email || '');
-        setBio(userData.bio || '');
-      
+        console.log('EditProfilePage: Fetched user data:', userData);
+        setFormData({
+          name: userData.name || '',
+          email: userData.email || '',
+          bio: userData.bio || '',
+          password: '',
+          confirmPassword: '',
+        });
+        setPreviewImage(userData.profilePicture?.url || '');
       } catch (err) {
-        console.error('Error fetching profile:', {
+        console.error('EditProfilePage: Error fetching profile:', {
           status: err.response?.status,
           message: err.response?.data?.message,
+          data: err.response?.data,
           error: err.message,
         });
         if (err.response?.status === 401) {
+          setError('Session expired. Please log in again.');
           logout();
           navigate('/login');
+        } else if (err.response?.status === 400 && err.response?.data?.message === 'Invalid user ID') {
+          setError('Your account may have been deleted or is invalid. Please log in again or contact support.');
         } else {
-          setError(err.response?.data?.message || 'Failed to load profile');
+          setError(err.response?.data?.message || 'Failed to load profile data. Please try again.');
         }
       } finally {
         setFetchLoading(false);
       }
     };
 
-    fetchProfile();
-  }, [getToken, logout, navigate, user]);
+    if (!authLoading) {
+      fetchProfile();
+    }
+  }, [getToken, logout, navigate, user, authLoading]);
 
-  
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    setError('');
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+      setError('Only JPEG, JPG, PNG, and GIF files are allowed');
+      setProfilePicture(null);
+      setPreviewImage('');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Image size must be less than 5MB');
+      setProfilePicture(null);
+      setPreviewImage('');
+      return;
+    }
+
+    setProfilePicture(file);
+    const reader = new FileReader();
+    reader.onloadend = () => setPreviewImage(reader.result);
+    reader.readAsDataURL(file);
+    setError('');
+  };
+
+  const handleRemoveImage = () => {
+    setProfilePicture(null);
+    setPreviewImage(user?.profilePicture?.url || '');
+    setError('');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
-    setSuccessMessage('');
+
+    if (formData.password && formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      setLoading(false);
+      return;
+    }
 
     const token = getToken();
+    console.log('EditProfilePage: Token on submit:', token ? token.substring(0, 10) + '...' : 'No token');
     if (!token) {
       setError('Please log in to update your profile');
       setLoading(false);
@@ -85,18 +147,40 @@ const EditProfilePage = () => {
       return;
     }
 
+    if (!user || !user._id || !isValidObjectId(user._id)) {
+      console.error('EditProfilePage: Invalid user ID before update:', user);
+      setError('Invalid user profile. Please log in again.');
+      setLoading(false);
+      logout();
+      navigate('/login');
+      return;
+    }
+
     try {
       const cleanToken = token.trim();
-      const formData = new FormData();
-      formData.append('name', name);
-      formData.append('email', email);
-      formData.append('bio', bio);
-      if (password) formData.append('password', password);
-      
+      const data = new FormData();
+      data.append('name', formData.name);
+      data.append('email', formData.email);
+      data.append('bio', formData.bio);
+      if (formData.password) {
+        data.append('password', formData.password);
+      }
+      if (profilePicture) {
+        console.log('EditProfilePage: Sending profilePicture:', profilePicture.name, profilePicture.size, profilePicture.type);
+        data.append('profilePicture', profilePicture);
+      }
+
+      console.log('EditProfilePage: Sending update request:', {
+        name: formData.name,
+        email: formData.email,
+        bio: formData.bio,
+        hasPassword: !!formData.password,
+        hasProfilePicture: !!profilePicture,
+      });
 
       const response = await axios.put(
         `${import.meta.env.VITE_API_URL}/api/users/profile`,
-        formData,
+        data,
         {
           headers: {
             Authorization: `Bearer ${cleanToken}`,
@@ -105,74 +189,109 @@ const EditProfilePage = () => {
         }
       );
 
+      console.log('EditProfilePage: Update response:', response.data);
+
       const updatedUser = {
-        ...user,
-        _id: user._id,
+        _id: response.data._id,
         name: response.data.name,
         email: response.data.email,
         bio: response.data.bio,
-       
+        profilePicture: response.data.profilePicture || user?.profilePicture || null,
+        isAdmin: response.data.isAdmin || user?.isAdmin || false,
+        followers: user?.followers || [],
+        following: user?.following || [],
       };
-      setUser(updatedUser);
-      localStorage.setItem('user', JSON.stringify(updatedUser));
+      updateAuthUser(updatedUser);
 
-      setSuccessMessage('Profile updated successfully!');
-      setTimeout(() => navigate('/profile'), 1000);
+      navigate('/profile', { state: { successMessage: 'Profile updated successfully!' } });
     } catch (err) {
-      console.error('Error updating profile:', {
+      console.error('EditProfilePage: Error updating profile:', {
         status: err.response?.status,
         message: err.response?.data?.message,
+        data: err.response?.data,
         error: err.message,
       });
       if (err.response?.status === 401) {
+        setError('Session expired. Please log in again.');
         logout();
         navigate('/login');
+      } else if (err.response?.status === 400 && err.response?.data?.message === 'Invalid user ID') {
+        setError('Your account may have been deleted or is invalid. Please log in again or contact support.');
+      } else if (err.response?.status === 400 && err.response?.data?.message.includes('duplicate key error')) {
+        setError('Email is already in use by another account.');
       } else {
-        setError(err.response?.data?.message || 'Failed to update profile');
+        setError(err.response?.data?.message || 'Failed to update profile. Please try again.');
       }
     } finally {
       setLoading(false);
     }
   };
 
-  if (fetchLoading) return <div className="compose-loading">Loading...</div>;
+  if (authLoading || fetchLoading) return <div className="edit-profile-loading">Loading...</div>;
 
   return (
-    <div className="compose-container">
-      <header className="compose-header">
+    <div className="edit-profile-container">
+      <header className="edit-profile-header">
         <h1>Edit Profile</h1>
-        <button onClick={() => navigate('/profile')} className="edit-profile-cancel-btn">
+        <Link to="/profile" className="edit-profile-cancel-btn">
           Cancel
-        </button>
+        </Link>
       </header>
 
       <main className="edit-profile-main">
-        {error && (
-          <div className="compose-error" role="alert" id="edit-error">
-            {error}
-          </div>
-        )}
-        {successMessage && (
-          <div className="compose-success" role="alert">
-            {successMessage}
+        {(error || authError) && (
+          <div className="edit-profile-error" role="alert" id="edit-error">
+            {error || authError}
+            {((error || authError).includes('Please log in again') || (error || authError).includes('Your account may have been deleted')) && (
+              <div>
+                <Link to="/login" className="edit-profile-error-link">Log in</Link>
+              </div>
+            )}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="compose-form">
-         
-            
-          
+        <form onSubmit={handleSubmit} className="edit-profile-form">
+          <div className="form-group">
+            <label htmlFor="profilePicture">Profile Picture</label>
+            {previewImage && (
+              <div className="image-preview">
+                <img
+                  src={previewImage}
+                  alt="Profile picture preview"
+                  className="edit-profile-preview-img"
+                  style={{ maxWidth: '100px', borderRadius: '50%' }}
+                />
+                <button
+                  type="button"
+                  onClick={handleRemoveImage}
+                  className="remove-image"
+                  aria-label="Remove profile picture"
+                >
+                  Remove
+                </button>
+              </div>
+            )}
+            <input
+              id="profilePicture"
+              type="file"
+              accept="image/jpeg,image/jpg,image/png,image/gif"
+              onChange={handleFileChange}
+              className="image-upload"
+            />
+          </div>
+
           <div className="form-group">
             <label htmlFor="name">Full Name</label>
             <input
               id="name"
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
               required
               placeholder="Your name"
               aria-required="true"
-              aria-describedby={error ? 'edit-error' : undefined}
+              aria-describedby={(error || authError) ? 'edit-error' : undefined}
             />
           </div>
 
@@ -181,12 +300,13 @@ const EditProfilePage = () => {
             <input
               id="email"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
               required
               placeholder="your@email.com"
               aria-required="true"
-              aria-describedby={error ? 'edit-error' : undefined}
+              aria-describedby={(error || authError) ? 'edit-error' : undefined}
             />
           </div>
 
@@ -194,11 +314,12 @@ const EditProfilePage = () => {
             <label htmlFor="bio">Bio</label>
             <textarea
               id="bio"
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
+              name="bio"
+              value={formData.bio}
+              onChange={handleInputChange}
               placeholder="Tell us about yourself"
               rows="4"
-              aria-describedby={error ? 'edit-error' : undefined}
+              aria-describedby={(error || authError) ? 'edit-error' : undefined}
             />
           </div>
 
@@ -207,18 +328,33 @@ const EditProfilePage = () => {
             <input
               id="password"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              placeholder="•••••••"
               minLength="8"
-              aria-describedby={error ? 'edit-error' : undefined}
+              aria-describedby={(error || authError) ? 'edit-error' : undefined}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="confirmPassword">Confirm New Password</label>
+            <input
+              id="confirmPassword"
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleInputChange}
+              placeholder="•••••••"
+              minLength="8"
+              aria-describedby={(error || authError) ? 'edit-error' : undefined}
             />
           </div>
 
           <div className="form-actions">
             <button
               type="submit"
-              className="publish-button"
+              className="edit-profile-submit-btn"
               disabled={loading}
               aria-busy={loading}
             >

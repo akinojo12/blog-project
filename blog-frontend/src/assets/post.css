@@ -209,7 +209,7 @@
   }
   
   .post-reply {
-    background-color: #3a3a3a;
+    background-color: white;
     border-radius: 4px;
     padding: 15px;
   }
@@ -223,7 +223,7 @@
   
   .post-reply-author {
     font-weight: bold;
-    color: #fff;
+    color: black;
   }
   
   .post-reply-date {
@@ -232,11 +232,11 @@
   
   .post-reply-content {
     font-size: 0.9rem;
-    color: #ccc;
+    color: #040404;
     line-height: 1.4;
   }
   
-  /* Loading and Error States */
+
   .post-loading,
   .post-error,
   .post-not-found {
@@ -596,7 +596,7 @@
     }
   }
 
-  /* Reply Section (Comments) */
+  
 .post-no-comments {
     text-align: center;
     font-size: 0.9rem;
@@ -621,21 +621,21 @@
   }
   
   .post-reply-edit-btn {
-    background-color: #ff4500;
+    background-color: #c7c4c2;
     color: #fff;
   }
   
   .post-reply-edit-btn:hover {
-    background-color: #e03e00;
+    background-color: #8d8b8b;
   }
   
   .post-reply-delete-btn {
-    background-color: #dc3545;
-    color: #fff;
+    background-color: #777071;
+    color: black;
   }
   
   .post-reply-delete-btn:hover {
-    background-color: #c82333;
+    background-color: #77696b;
   }
   
   .post-reply-cancel {
@@ -697,4 +697,302 @@
       padding: 2px 5px;
       font-size: 0.5rem;
     }
+  }
+
+  .post-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .post-head {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .post-back-btn, .post-profile-btn {
+    padding: 8px 16px;
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+  }
+  
+  .post-back-btn:hover, .post-profile-btn:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .post-loading, .post-error, .post-not-found {
+    text-align: center;
+    padding: 20px;
+    font-size: 18px;
+  }
+  
+  .post-error {
+    color: #d32f2f;
+  }
+  
+  .post-main {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .post-featured-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .post-author-info {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  
+  .post-author {
+    font-weight: bold;
+  }
+  
+  .post-date {
+    color: #666;
+    font-size: 14px;
+  }
+  
+  .post-follow-btn {
+    padding: 6px 12px;
+    background-color: rgb(86, 152, 86);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: not-allowed;
+  }
+  
+  .post-content, .post-excerpt {
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  
+  .post-tags {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .post-tag {
+    background-color: #e0e0e0;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+  }
+  
+  .post-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .post-edit-btn, .post-delete-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .post-edit-btn {
+    background-color: #28a745;
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  .post-edit-btn:hover {
+    background-color: #218838;
+  }
+  
+  .post-delete-btn {
+    background-color: #dc3545;
+    color: #fff;
+  }
+  
+  .post-delete-btn:hover {
+    background-color: #c82333;
+  }
+  
+  .post-delete-btn:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+  }
+  
+  .post-interactions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .post-interaction-buttons {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .post-interaction-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+  }
+  
+  .post-interaction-btn.liked {
+    color: #d32f2f;
+  }
+  
+  .post-interaction-btn:disabled {
+    cursor: not-allowed;
+    color: #666;
+  }
+  
+  .post-timestamp {
+    color: #666;
+    font-size: 12px;
+  }
+  
+  .post-reply-section {
+    margin-top: 20px;
+  }
+  
+  .post-reply-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .post-reply-input {
+    resize: vertical;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    min-height: 80px;
+  }
+  
+  .post-reply-submit {
+    align-self: flex-start;
+    padding: 8px 16px;
+    background-color:rgb(86, 152, 86);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .post-reply-submit:hover {
+    background-color: green
+  }
+  
+  .post-reply {
+    border-top: 1px solid #eee;
+    padding: 12px 0;
+  }
+  
+  .post-reply-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  
+  .post-reply-author {
+    font-weight: bold;
+  }
+  
+  .post-reply-date {
+    color: #666;
+    font-size: 12px;
+  }
+  
+  .post-reply-content {
+    margin-bottom: 8px;
+  }
+  
+  .post-reply-actions {
+    display: flex;
+    gap: 8px;
+  }
+  
+  
+  .post-reply-delete-btn {
+    color: black;
+  }
+  
+  .post-no-comments {
+    text-align: center;
+    color: #666;
+  }
+  .post-more-actions {
+    position: relative;
+  }
+  
+  .post-more-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+  }
+  
+  .post-more-btn:hover {
+    background: #f0f0f0;
+    border-radius: 4px;
+  }
+  
+  .post-more-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    min-width: 120px;
+  }
+  
+  .post-dropdown-item {
+    display: block;
+    padding: 8px 16px;
+    background: none;
+    border: none;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+    text-decoration: none;
+    color: #333;
+  }
+  
+  .post-dropdown-item:hover {
+    background: #f0f0f0;
+  }
+  
+  .post-delete-item {
+    color: #d32f2f;
+  }
+  
+  .post-delete-item:hover {
+    background: #ffe6e6;
   }

@@ -179,9 +179,7 @@ const EditPostPage = () => {
     <div className="compose-container">
       <header className="compose-header">
         <h1>Edit Post</h1>
-        <button onClick={() => navigate('/profile')} className="edit-post-cancel-btn">
-          Cancel
-        </button>
+       
       </header>
 
       <main className="compose-main">
@@ -211,17 +209,7 @@ const EditPostPage = () => {
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="excerpt">Excerpt (optional)</label>
-            <textarea
-              id="excerpt"
-              value={excerpt}
-              onChange={(e) => setExcerpt(e.target.value)}
-              placeholder="Short summary of your post"
-              rows="3"
-              aria-describedby={error ? 'edit-error' : undefined}
-            />
-          </div>
+          
 
           <div className="form-group">
             <label htmlFor="content">Content</label>
@@ -237,20 +225,6 @@ const EditPostPage = () => {
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="category">Category</label>
-            <select
-              id="category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              aria-describedby={error ? 'edit-error' : undefined}
-            >
-              <option value="Home">Home</option>
-              <option value="Tech">Tech</option>
-              <option value="Lifestyle">Lifestyle</option>
-              <option value="Education">Education</option>
-            </select>
-          </div>
 
           <div className="form-group">
             <label htmlFor="featuredImage">Featured Image (optional)</label>

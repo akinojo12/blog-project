@@ -12,6 +12,8 @@ const LoginPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -24,12 +26,55 @@ const LoginPage = () => {
         password,
       });
 
-      const data = response.data;
-      login(data);
+      console.log('Raw login response:', response.data);
+
+      let token, userData;
+      if (response.data.token && response.data.user) {
+        // New structure: { token, user: { _id, name, ... } }
+        ({ token } = response.data);
+        userData = response.data.user;
+      } else if (response.data.token && response.data._id) {
+        // Fallback for old structure: { _id, name, token, ... }
+        ({ token } = response.data);
+        userData = {
+          _id: response.data._id,
+          name: response.data.name || 'Unknown',
+          email: response.data.email,
+          isAdmin: response.data.isAdmin || false,
+          bio: response.data.bio || '',
+          profilePicture: response.data.profilePicture || null,
+          followers: response.data.followers || [],
+          following: response.data.following || [],
+        };
+      } else {
+        throw new Error('Invalid response from server: Missing token or user data');
+      }
+
+      if (!token || !userData._id) {
+        throw new Error('Invalid response from server: Missing token or user ID');
+      }
+
+      if (!isValidObjectId(userData._id)) {
+        console.error('Invalid user ID received:', userData._id);
+        throw new Error('Invalid user ID from server');
+      }
+
+      console.log('Processed login data:', { token, userData });
+
+      await login(userData, token);
       navigate('/home');
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to log in. Please check your credentials.');
-      console.error(err);
+      console.error('Login error:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+      });
+      const errorMessage =
+        err.message.includes('Invalid response from server') ||
+        err.message === 'Invalid user ID from server'
+          ? 'Server returned invalid data. Please try again or contact support.'
+          : err.response?.data?.message || 'Failed to log in. Please check your credentials.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -42,7 +87,7 @@ const LoginPage = () => {
           <h2>Welcome back</h2>
           <p>Sign in to your account</p>
         </div>
-        
+
         {error && <div className="auth-error">{error}</div>}
 
         <form onSubmit={handleSubmit} className="auth-form">
@@ -56,6 +101,7 @@ const LoginPage = () => {
               required
               placeholder="your@email.com"
               autoComplete="email"
+              aria-required="true"
             />
           </div>
 
@@ -69,6 +115,7 @@ const LoginPage = () => {
               required
               placeholder="••••••••"
               autoComplete="current-password"
+              aria-required="true"
             />
           </div>
 
@@ -82,17 +129,20 @@ const LoginPage = () => {
             </Link>
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="auth-button"
             disabled={loading}
+            aria-busy={loading}
           >
             {loading ? 'Signing in...' : 'Sign in'}
           </button>
         </form>
 
         <div className="auth-footer">
-          <p>Don't have an account? <Link to="/register">Sign up</Link></p>
+          <p>
+            Don't have an account? <Link to="/register">Sign up</Link>
+          </p>
         </div>
       </div>
     </div>

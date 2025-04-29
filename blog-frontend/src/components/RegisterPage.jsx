@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import '../assets/login.css';
 
 const RegisterPage = () => {
@@ -14,11 +15,14 @@ const RegisterPage = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
 
+  const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      return setError("Passwords don't match");
+      setError("Passwords don't match");
+      return;
     }
 
     try {
@@ -31,12 +35,47 @@ const RegisterPage = () => {
         password,
       });
 
-      const data = response.data;
-      register(data);
+      const { token, user } = response.data;
+      if (!token || !user || !user._id) {
+        throw new Error('Invalid response from server: Missing token or user data');
+      }
+
+      if (!isValidObjectId(user._id)) {
+        console.error('RegisterPage: Invalid user ID received:', user._id);
+        throw new Error('Invalid user ID from server');
+      }
+
+      const decodedToken = jwtDecode(token);
+      console.log('RegisterPage: Decoded token:', decodedToken);
+      if (!decodedToken.id || !isValidObjectId(decodedToken.id)) {
+        console.error('RegisterPage: Invalid user ID in token:', decodedToken.id);
+        throw new Error('Invalid user ID in token');
+      }
+
+      console.log('RegisterPage: Register response:', { token, user });
+
+      // Structure userData to match AuthContext expectations
+      const userData = {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        bio: user.bio || '',
+        profilePicture: user.profilePicture || null,
+        followers: user.followers || [],
+        following: user.following || [],
+        isAdmin: user.isAdmin || false,
+      };
+
+      await register(userData, token);
+      // Auto-login by navigating to a protected route
       navigate('/login');
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to create account');
-      console.error(err);
+      console.error('RegisterPage: Register error:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+      });
+      setError(err.response?.data?.message || 'Failed to create account. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -49,7 +88,7 @@ const RegisterPage = () => {
           <h2>Create your account</h2>
           <p>Start your writing journey today</p>
         </div>
-        
+
         {error && <div className="auth-error">{error}</div>}
 
         <form onSubmit={handleSubmit} className="auth-form">
@@ -63,6 +102,7 @@ const RegisterPage = () => {
               required
               placeholder="Your name"
               autoComplete="name"
+              aria-required="true"
             />
           </div>
 
@@ -76,6 +116,7 @@ const RegisterPage = () => {
               required
               placeholder="your@email.com"
               autoComplete="email"
+              aria-required="true"
             />
           </div>
 
@@ -90,6 +131,7 @@ const RegisterPage = () => {
               placeholder="••••••••"
               minLength="8"
               autoComplete="new-password"
+              aria-required="true"
             />
           </div>
 
@@ -104,27 +146,32 @@ const RegisterPage = () => {
               placeholder="••••••••"
               minLength="8"
               autoComplete="new-password"
+              aria-required="true"
             />
           </div>
 
           <div className="form-group terms">
-            <input type="checkbox" id="terms" required />
+            <input type="checkbox" id="terms" required aria-required="true" />
             <label htmlFor="terms">
-              I agree to the <Link to="/terms">Terms of Service</Link> and <Link to="/privacy">Privacy Policy</Link>
+              I agree to the <Link to="/terms">Terms of Service</Link> and{' '}
+              <Link to="/privacy">Privacy Policy</Link>
             </label>
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="auth-button"
             disabled={loading}
+            aria-busy={loading}
           >
             {loading ? 'Creating account...' : 'Create account'}
           </button>
         </form>
 
         <div className="auth-footer">
-          <p>Already have an account? <Link to="/login">Sign in</Link></p>
+          <p>
+            Already have an account? <Link to="/login">Sign in</Link>
+          </p>
         </div>
       </div>
     </div>
