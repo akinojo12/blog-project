@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import '../assets/blogCard.css';
+import '../assets/blogcard.css';
 
 const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
 
