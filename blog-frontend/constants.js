@@ -1,1 +1,1 @@
-export const baseUrl = "http://localhost:4100/"
+export const baseUrl = "https://blog-backend-new-esur.onrender.com"

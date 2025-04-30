@@ -30,11 +30,11 @@ const LoginPage = () => {
 
       let token, userData;
       if (response.data.token && response.data.user) {
-        // New structure: { token, user: { _id, name, ... } }
+        
         ({ token } = response.data);
         userData = response.data.user;
       } else if (response.data.token && response.data._id) {
-        // Fallback for old structure: { _id, name, token, ... }
+        
         ({ token } = response.data);
         userData = {
           _id: response.data._id,
